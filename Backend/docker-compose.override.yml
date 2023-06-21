@@ -1,0 +1,28 @@
+version: "3.8"
+
+services:
+  postgres:
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=P@ssword
+      - POSTGRES_DB=todo
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  todoapi:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=https://+:443;http://+:80
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=P@ssword
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+      - ConnectionStrings__DefaultConnection=Server=postgres;User ID=postgres;Password=P@ssword;Port=5432;Database=todo;Integrated Security=true;Pooling=true
+    restart: "unless-stopped"
+    ports:
+      - "5000:80"
+      - "5001:443"
+    volumes:
+      - ~/.aspnet/https:/https:ro
+      - ~/.microsoft/usersecrets:/root/.microsoft/usersecrets:ro

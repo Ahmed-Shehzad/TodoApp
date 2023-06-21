@@ -1,0 +1,19 @@
+version: '3.8'
+
+volumes:
+  pgdata:
+    name: pgdata
+
+services:
+  postgres:
+    container_name: postgres
+    image: postgis/postgis:15-3.3-alpine
+
+  todoapi:
+    container_name: todoapi
+    image: ${DOCKER_REGISTRY-}todoapp/todoapi
+    build:
+      context: .
+      dockerfile: /TodoApp/Dockerfile
+    depends_on:
+      - postgres
