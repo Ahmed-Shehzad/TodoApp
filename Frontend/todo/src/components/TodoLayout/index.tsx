@@ -32,8 +32,10 @@ const TodoLayout: FC = () => {
   useEffect(() => {
     const fetchTodos = async () => {
       const result = await todoService.findAll();
-      const orderedTodos = SortByDate(result);
-      setTodos(orderedTodos);
+      if (!result) return;
+
+      const sorted = SortByDate(result);
+      setTodos(sorted);
     };
 
     fetchTodos();
@@ -45,6 +47,8 @@ const TodoLayout: FC = () => {
 
     todo.description = `Updated Description for: ${todo.title}`;
     const result = await todoService.update(todo);
+    if (!result) return;
+
     todos[index] = result;
     setTodos([...todos]);
   };
@@ -55,6 +59,7 @@ const TodoLayout: FC = () => {
     const result = await todoService.delete({
       id: todo.id,
     });
+    if (!result) return;
     const newTodos = todos.filter((item) => item.id !== result.id);
     setTodos(newTodos);
   };
@@ -64,6 +69,7 @@ const TodoLayout: FC = () => {
       if (newTodo.title && newTodo.title.length < 11) return;
       newTodo.description = `Description for: ${newTodo.title}`;
       const result = await todoService.create(newTodo);
+      if (!result) return;
 
       setTodos([...todos, result]);
       setNewTodo({
@@ -115,6 +121,9 @@ const TodoLayout: FC = () => {
                     setNewTodo(todoCreate);
                   }}
                 />
+                <Form.Control.Feedback type="invalid">
+                  Please write title with more than 10 characters
+                </Form.Control.Feedback>
               </InputGroup>
             </Col>
           </Row>
