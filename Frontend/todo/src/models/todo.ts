@@ -1,4 +1,6 @@
-export interface Todo {
+export interface IRoot {}
+
+export interface Todo extends IRoot {
   id: string;
   title: string;
   description?: string;
